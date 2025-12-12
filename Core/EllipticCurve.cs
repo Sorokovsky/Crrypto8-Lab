@@ -90,4 +90,9 @@ public class EllipticCurve
     {
         return IsInfinity ? 0 : HashCode.Combine(X, Y);
     }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
 }
