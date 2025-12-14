@@ -41,12 +41,20 @@ public class EllipticCurve
         if (second.IsInfinity) return first;
         if (first.X == second.X && first.Y == ModuleMath.Mod(-second.Y, first.P)) return Infinity;
         BigInteger lambda;
-        if (first == second)
-            lambda = ModuleMath.Mod(
-                (3 * first.X * first.X + first.A) * ModuleMath.ModInverse(2 * first.Y, first.P),
-                first.P);
-        else
-            lambda = ModuleMath.Mod((second.Y - first.Y) * ModuleMath.ModInverse(second.X - first.X, first.P), first.P);
+        try
+        {
+            if (first == second)
+                lambda = ModuleMath.Mod(
+                    (3 * first.X * first.X + first.A) * ModuleMath.ModInverse(2 * first.Y, first.P),
+                    first.P);
+            else
+                lambda = ModuleMath.Mod((second.Y - first.Y) * ModuleMath.ModInverse(second.X - first.X, first.P),
+                    first.P);
+        }
+        catch (DivideByZeroException)
+        {
+            return Infinity;
+        }
 
         var x3 = ModuleMath.Mod(lambda * lambda - first.X - second.X, first.P);
         var y3 = ModuleMath.Mod(lambda * (first.X - x3) - first.Y, first.P);
@@ -93,6 +101,6 @@ public class EllipticCurve
 
     public override string ToString()
     {
-        return $"({X}, {Y})";
+        return X.ToString("X") + Y.ToString("X");
     }
 }
